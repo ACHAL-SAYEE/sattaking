@@ -1,0 +1,8 @@
+ // spinResult.style.backgroundColor="white"
+    // spinResult.insertAdjacentText=`spin number is `
+//     spinResult.insertAdjacentText("afterbegin",`spin number is `);
+//     let spinResultSpan=document.getElementsByClassName("spinResultSpan")
+// console.log("spinResultSpan",spinResultSpan)
+    // spinResultSpan.textContent=`${numberToPoint}`
+    //using insecure way use better approach than innerHTML to prevent xss attacks
+    // spinResult.innerHTML=`spin number is <span class="spinResultSpan">${numberToPoint}</span>`

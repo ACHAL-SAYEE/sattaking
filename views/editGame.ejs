@@ -1,0 +1,123 @@
+<%- include("partials/header"); -%>
+
+                <!-- End of Topbar -->
+
+                <!-- Begin Page Content -->
+                <div class="container-fluid">
+                    <div class="col-xl-12 col-lg-12">
+                        <div class="card shadow mb-4">
+                            <!-- Card Header - Dropdown -->
+                            <div
+                                class="card-header py-3 d-flex flex-row align-items-center justify-content-between">
+                                <h6 class="m-0" style="color: #501bd7eb; font-weight: 700;">Edit Game</h6>
+                            </div>
+                            <!-- Card Body -->
+                            <div class="card-body">
+                                <form action="/editGame" method="post">
+                                    <input type="hidden" name="_csrf" value="<%= csrfToken %>">
+
+                                    <div class="form-group">
+                                      <label for="gameName">Game Name<sup>*</sup></label>
+                                      <select name="name" id="gameName" required class="form-control" aria-placeholder="" onChange="onChangeGame(event)">
+                                        <% for(var i=0; i < existingGames.length; i++){ %>
+                                            <option value="<%= existingGames[i].name %>"><%= existingGames[i].name %></option>
+                                        <% } %>       
+
+                                     </select>
+                                    </div>
+                                    <div class="form-group">
+                                        <label for="newName">new Name<sup>*</sup></label>
+                                        <input type="text" required class="form-control" id="newName" aria-describedby="emailHelp" placeholder="" name="newName" value="<%= existingGames[0].name %>" >
+                                    </div>
+                                    <div class="form-group">
+                                        <label for="gameStartTime">Game Start Time<sup>*</sup></label>
+                                      <input type="time" required class="form-control" id="gameStartTime" placeholder=""  name="gameStartTime" value="<%= existingGames[0].gameStartTime %>">
+                                    </div>
+                                    <div class="form-group">
+                                        <label for="gameEndTime">Game Result Time<sup>*</sup></label>
+                                        <input type="time" required class="form-control" id="gameEndTime" placeholder=""  name="gameEndTime" value="<%= existingGames[0].gameEndTime %>">
+                                  
+                                    </div>
+
+                                       
+                                    <!--Image upload-->
+                                    <button type="submit" class="btn btn-primary" style="background:#bcaced; color: #501bd7eb; font-weight: 700;">Submit</button>
+                                </form>
+                            </div>
+                        </div>
+                    </div>
+                    
+                </div>
+                <!-- /.container-fluid -->
+
+            </div>
+            <!-- End of Main Content -->
+
+            <!-- Footer -->
+         
+            <!-- End of Footer -->
+
+        </div>
+        <!-- End of Content Wrapper -->
+
+    </div>
+    <!-- End of Page Wrapper -->
+
+    <!-- Scroll to Top Button-->
+    <a class="scroll-to-top rounded" href="#page-top">
+        <i class="fas fa-angle-up"></i>
+    </a>
+
+    <!-- Logout Modal-->
+    <div class="modal fade" id="logoutModal" tabindex="-1" role="dialog" aria-labelledby="exampleModalLabel"
+        aria-hidden="true">
+        <div class="modal-dialog" role="document">
+            <div class="modal-content">
+                <div class="modal-header">
+                    <h5 class="modal-title" id="exampleModalLabel">Ready to Leave?</h5>
+                    <button class="close" type="button" data-dismiss="modal" aria-label="Close">
+                        <span aria-hidden="true">×</span>
+                    </button>
+                </div>
+                <div class="modal-body">Select "Logout" below if you are ready to end your current session.</div>
+                <div class="modal-footer">
+                    <button class="btn btn-secondary" type="button" data-dismiss="modal">Cancel</button>
+                    <a class="btn btn-primary" href="/logout">Logout</a>
+                </div>
+            </div>
+        </div>
+    </div>
+<script>
+    function onChangeGame(e){
+        let newGame=document.getElementById("newName")
+        let allGames=JSON.parse('<%- JSON.stringify(existingGames)  %>')
+        let currGame=allGames.find((game)=>game.name===e.target.value)
+        let gameStartTime=document.getElementById("gameStartTime")
+        let gameEndTime=document.getElementById("gameEndTime")
+// console.log("currGame",currGame)
+        newGame.value=e.target.value
+        gameStartTime.value=currGame.gameStartTime
+        gameEndTime.value=currGame.gameEndTime
+
+    }
+</script>
+    <!-- Bootstrap core JavaScript-->
+    <script src="<%= domain %>/vendor/jquery/jquery.min.js"></script>
+    <script src="<%= domain %>/vendor/bootstrap/js/bootstrap.bundle.min.js"></script>
+
+    <!-- Core plugin JavaScript-->
+    <script src="<%= domain %>/vendor/jquery-easing/jquery.easing.min.js"></script>
+
+    <!-- Custom scripts for all pages-->
+    <script src="<%= domain %>/js/sb-admin-2.min.js"></script>
+
+    <!-- Page level plugins -->
+    <script src="<%= domain %>/vendor/chart.js/Chart.min.js"></script>
+
+    <!-- Page level custom scripts -->
+    <script src="<%= domain %>/js/demo/chart-area-demo.js"></script>
+    <script src="<%= domain %>/js/demo/chart-pie-demo.js"></script>
+
+</body>
+
+</html>

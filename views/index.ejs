@@ -1,0 +1,952 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>SATTA KING</title>
+    <link rel="stylesheet" href="/css/style.css">
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Ubuntu:wght@500&display=swap" rel="stylesheet">
+<style>
+    * {
+  box-sizing: border-box;
+}
+
+.spinning-wheel-container {
+  position: relative;
+  margin: 0;
+  padding: 0;
+  background-color: white;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  height: 600px;
+  overflow: hidden;
+}
+/* @media (min-width: 400px) {
+    .wheel-container{
+        height: 600px;
+    }
+} */
+.wheel-container {
+  
+  background-color: #ccc;
+  border-radius: 50%;
+  border: 15px solid #dde;
+  position: relative;
+  /* overflow: hidden; */
+  /* transform: rotate(0deg); */
+  transition: transform 7s;
+}
+@media (max-width: 500px) {
+    .wheel-container{
+        height:  90vw;
+        width:90vw;
+    }
+}
+
+#spin {
+  position: absolute;
+  top: 50%;
+  left: 50%;
+  transform: translate(-50%, -50%);
+  z-index: 10;
+  background-color: #e2e2e2;
+  text-transform: uppercase;
+  border: 8px solid #fff;
+  font-weight: bold;
+  font-size: 18px;
+  color: #a2a2a2;
+  width: 80px;
+  height: 80px;
+  font-family: sans-serif;
+  border-radius: 50%;
+  text-align: center;
+  /* cursor: pointer; */
+  outline: none;
+  /* letter-spacing: 1px; */
+  transition: font-size 2s ;
+}
+
+.spinPointer {
+    position: absolute;
+    width: 20px;
+    height: calc(50% - 59px);
+    background: #fff;
+    clip-path: polygon(50% 0%, 15% 100%, 85% 100%);
+    z-index: 15;
+    /* top: calc(50% - 120px); */
+    top: 14px;
+    left: calc(50% - 10px);
+}
+
+@media (min-width: 500px) {
+    .wheel-container{
+       width: 500px;
+       height: 500px;
+    }
+    /* .spinPointer {
+        transform: translateX(15px);
+
+    } */
+}
+/* @media (min-width: 300px) and (max-width: 400px) {
+    .spinPointer {
+        
+    transform: translateY(-78px);
+    height: 80px;
+    }
+} */
+.wheel-container .number {
+  height: 50%;
+  width: 15px;
+  position: absolute;
+  clip-path: polygon(100% 0, 50% 100%, 0 0);
+  /* clip-path: polygon(50% 0%, 48% 100%, 52% 100%); */
+
+  /* transform: translateX(-50%); */
+  transform-origin: bottom;
+  text-align: center;
+  /* display: flex; */
+  align-items: center;
+  justify-content: center;
+  font-size: 10px;
+  font-weight: bold;
+  font-family: sans-serif;
+  color: #fff;
+  /* left: 135px; */
+  right: 228px;
+}
+
+@media (max-width: 500px) {
+    .wheel-container .number{
+        /* height:  30%; */
+        right: 48%;
+        font-size: 5px;
+    }
+}
+@media (max-width: 379px) {
+    .wheel-container .number{
+       width: 10px;
+    }
+}
+@media (min-width: 379px) and (max-width: 400px) {
+    .wheel-container .number{
+       width: 12px;
+    }
+}
+
+#spinResult{
+    color: red;
+    /* background-color: white; */
+    width: 152px;
+    height: 32px;
+    text-align: center;
+    padding-top: 5px;
+    border-radius: 30px;
+    transition: background-color 1s;
+}
+.spinResultSpan{
+    font-weight: bold;
+    color: red;
+    font-size: 1.2em;
+}
+.spin-anim{
+    position: absolute;
+    top:10px;
+    border: none;
+    z-index: 10;
+    height: 100%;
+    width: 100%;
+}
+.spin-none{
+    display: none;
+}
+#spin{
+    background-color: white;
+    color: black;
+}
+.refreshBtn{
+ 
+ z-index: 12;
+ text-decoration: none;
+    padding: 4px 8px;
+    background-color: WHITE;
+    color: #30051c;
+    border-width: 4px;
+    border-color: #ff033e;
+    border-style: inset;
+    font-weight: 700;
+    font-size: 22px;
+    border-radius: 10px;
+    position: fixed;
+    bottom: 70px;
+    left: 10px;
+}
+#livetime{
+    color: black;
+}
+
+.wheel-pointer-container {
+    position: absolute;
+    /* background-color: red; */
+    /* z-index: -1; */
+    top: 60px;
+    height: 500px;
+    width: 500px;
+}
+@media (max-width: 500px) {
+    .wheel-pointer-container {
+        height: 90vw;
+        width:  90vw;
+        /* top:0px; */
+        top: 50%;
+    transform: translateY(-50%);
+    }
+    .spinPointer{
+        top:21px;
+    }
+}
+@media (max-width: 400px) {
+    .spinning-wheel-container {
+height: 400px;
+    }
+}
+
+</style>
+<script src="/socket.io/socket.io.js"></script>
+
+</head>
+
+<body>
+    <button class="refreshBtn" onclick="location.reload();window.scrollTo(0, 0);">
+       Refresh
+    </button>
+    <section class="head">
+        <button class="btnsatta" style="width: 19%;">SATTA KING</button>
+        <button class="btnsatta" style="width: 30%;">SATTA RESULT</button>
+        <button class="btnsatta" style="width: 30%;">LEAK SATTA</button>
+        <button class="btnsatta" style="width: 19%;">SATTA CHART</button>
+    </section>
+    <section class="upper">
+        <div class="up">
+            <div class="l">
+                <h2>SATTA KING</h2>
+                <button class="btn2"><a href="https://sattakingspinner.in" style="color:white;text-transform: uppercase;">www.sattakingspinner.in</a></button>
+            </div>
+            <div class="r">
+                <button class="btn2">Online Khaiwal <span><img src="/img/whatsapp.png" alt=""></span></button>
+                <button class="btn2">Today Leak Jodi <span><img src="/img/whatsapp.png" alt=""></span></button>
+            </div>
+        </div>
+        <div class="site">
+            <h1 class="other"><a href="https://sattakingspinner.in" style="color: white;text-transform: uppercase;">https://sattakingspinner.in</a></h1>
+            <h3 class="other underline">The Most Trusted Live Spinner Game</h3>
+        </div>
+        <h2 id="livetime"></h2>
+        <h3 style="text-align: center;color: #E41F3B;font-size: 23px;">Spinner Live Result Today</h3>
+
+        <div style="overflow-x: hidden;">
+            <% let gamesText="" %>
+            <% for(let p=0;p<6;p++) {
+                gamesText+= parray[gameIndex]?`${parray[gameIndex].name}     `:''
+             } %>
+            <p id="ot"><%= parray[gameIndex]?parray[gameIndex].name:'' %></p>
+            <!-- <p id="ot2">The Most Trusted Live Spinner Game</p> -->
+            <!-- <p id="ot">
+                <% parray[gameIndex]?.name.split('').forEach(char => { %>
+                    <span><%= char %></span>
+                <% }); %>
+            </p> -->
+     <!-- <p id="ot" style="white-space: pre;" ><%= gamesText %></p> -->
+
+
+        </div>
+    </section>
+    <section class="spinning-wheel-container">
+        <iframe src="https://lottie.host/embed/6a895cb8-30fd-448d-82a3-61742e0f69a1/b2An8zx5qx.json" class="spin-anim spin-none"></iframe>
+
+        <button id="spin" disabled>Start</button>
+        <div class="wheel-container">
+            
+        </div>
+        <div class="wheel-pointer-container">
+            <div class="spinPointer">
+
+            </div>
+        </div>
+        
+        <!-- <p style="position: absolute;z-index: 1;bottom:13px;" id="spinResult"><span class="spinResultSpan"></span></p> -->
+        <!-- <button class="btn btn-primary" style="position: absolute;z-index: 1;bottom:13px;" onclick="resetSpinningWheel()">reset</button> -->
+    </section>
+    <div class="taby">
+<h1>KHELO AUR JITO</h1>
+<h4>SATTA KING | SATTA RESULT | SATTA RECORD</h4>
+    </div>
+    <% 
+    let currDate=new Date()
+    let currYear=currDate.getFullYear()
+    let currDate2=currDate.getDate()
+    let currMonth=currDate.getMonth()+1
+    let currHour=currDate.getHours()
+    let currMinute=currDate.getMinutes()
+    let prevDate=currDate
+    prevDate.setDate(currDate2-1)
+    // console.log("prevDate",prevDate)
+    let prevDate2=prevDate.getDate()
+    let prevMonth=prevDate.getMonth()+1
+
+    let prevYear=prevDate.getFullYear()
+// console.log("`${prevDate2}-${prevMonth}-${prevYear}`",`${prevDate2}-${prevMonth}-${prevYear}`)
+    let yearsarr=[]
+    for(let i=2023;i<=currYear;i++){
+        yearsarr.push(i)
+    }
+   
+    %>
+    <section class="middle">
+        <!-- <button class="btn" id="btn">August 27, 2023 06:15 PM</button> -->
+        <% for(let i=0;i<parray.length;i++){ %>
+            <% 
+            let gameEnd= parray[i].gameEndTime.split(":").map(Number)
+            let gameEndHour= gameEnd[0]
+            let gameEndMinute= gameEnd[1]
+            %>
+             
+            <div style="margin-bottom: 0px;margin-top: -17px;">
+                <p><%= parray[i].name %></p>
+                    
+                <% if( currHour > gameEndHour || (currHour === gameEndHour && currMinute >=  gameEndMinute) ){ %>
+                    <% console.log("iterate ",i," gameIndex ",gameIndex," isEndedGameValueSet ",isEndedGameValueSet) %>
+                    <% if(i===gameIndex  ){ %> 
+                        <% if(isEndedGameValueSet){ %>
+                            <p class="detail" id="card<%= parray[i].name %>">
+                                <%if( parray[i].value[parray[i].value.length-1].date===`${currDate2}-${currMonth}-${currYear}`) {%>
+                              <span><%= parray[i].value[parray[i].value.length-1].number < 10 ? '0' + parray[i].value[parray[i].value.length-1].number : parray[i].value[parray[i].value.length-1].number %>
+                              </span>          <%}else{ %>
+                                   <span>-</span>
+                                 <% } %>
+                            </p>
+                            <% }else{%>
+                                <p class="detail" id="card<%= parray[i].name %>">-</p>
+
+                            <% } %>
+                    <% } else { %>
+                        <p class="detail" id="card<%= parray[i].name %>">
+
+                            <%if( parray[i].value[parray[i].value.length-1].date===`${currDate2}-${currMonth}-${currYear}`) {%>
+                                <%= parray[i].value[parray[i].value.length-1].number < 10 ? '0' + parray[i].value[parray[i].value.length-1].number : parray[i].value[parray[i].value.length-1].number %>
+                                         <%}else{ %>
+                                     -
+                                   <% } %>
+
+                        </p>                    <% } %>
+            <% }else{ %>
+                <p class="detail" id="card<%= parray[i].name %>"> </p>
+    
+    
+          <% } %> 
+            </div>
+        <%}%>
+   
+    </section>
+    <section class="bottom">
+        <!-- <div style="border-radius:25px; background-color: #FF290C;margin: 13px;padding: 15px;box-shadow: black 0px 2px 4px 0px, rgba(14, 30, 37, 0.32) 0px 2px 16px 0px;">
+            <p style="color: white;"><%=description%></p>
+            <div style="border-radius: 10px;  background-color: black;width: 90px; margin: auto;padding-left: 20px;padding-right: 20px; color: white;"><%=number%></div>
+            <br>
+            <div style="display: flex;justify-content: space-between;">
+                <a href="tel: <%=number%>" style="text-decoration: none;">
+                    <div style="border-radius: 10px;  background-color: white;width: 110px;padding-left: 20px;padding-right: 20px; color: #FF290C;">CALL NOW <span><img src="/img/whatsapp.png" alt=""></div>
+                </a>
+                <a href="tel: <%=number%>" style="text-decoration: none;">
+                    <div style="border-radius: 10px;  background-color: white;width: 110px;padding-left: 20px;padding-right: 20px; color: #FF290C;">WHATSAPP <span><img src="/img/whatsapp.png" alt=""></div>
+                </a>
+            </div>
+
+        </div> -->
+        <h4><span><img src="/img/star.png" alt=""></span>SATTA KING RESULT <span><img src="/img/star.png" alt=""></span></h4>
+        <div id="chart2">
+            <% for(let i=0;i<parray.length;i++) { %>
+                <% 
+                let gameEnd= parray[i].gameEndTime.split(":").map(Number)
+                let gameEndHour= gameEnd[0]
+                let gameEndMinute= gameEnd[1]
+                %>
+
+                <% if(i%5===0) {%>
+                    <div class="game0">
+                        <h2 style="color: white;margin-top: 3px;margin-bottom: -14px;"><%= parray[i].name %></h2>
+                        <% 
+                        // Get the time from the current game
+                        const timeParts = parray[i].gameEndTime.split(':');
+                        const hour = parseInt(timeParts[0]);
+                        const minute = parseInt(timeParts[1]);
+                        // Format the time to AM/PM
+                        const formattedTime = new Date(0, 0, 0, hour, minute).toLocaleTimeString('en-US', {hour: '2-digit', minute: '2-digit', hour12: true}).toUpperCase();
+                    %>
+                    <p style="color: yellow;margin-bottom: 2px;">(<%= formattedTime %>)</p>
+                    <div><span style="margin-right: 5px;">कल</span> <span>आज</span> </div>
+                    <div><span style="margin-right: 5px;">{<%= parray[i].value.length < 2 ? (parray[i].value[0].number < 10 ? '0' + parray[i].value[0].number : parray[i].value[0].number) : parray[i].value[parray[i].value.length - 2].date === `${prevDate2}-${prevMonth}-${prevYear}` ? (parray[i].value[parray[i].value.length - 2].number < 10 ? '0' + parray[i].value[parray[i].value.length - 2].number : parray[i].value[parray[i].value.length - 2].number) : (parray[i].value[parray[i].value.length - 1].number < 10 ? '0' + parray[i].value[parray[i].value.length - 1].number : parray[i].value[parray[i].value.length - 1].number) %>}</span> 
+                        <img src="/img/arrow.gif" width="12" height="12" alt="satta king live result | fast live result | satta live result" title="satta live result | satta king live result | satta vip king">
+                        <% if (currHour > gameEndHour || (currHour === gameEndHour && currMinute >= gameEndMinute)) { %>
+                            <% if (i === gameIndex) { %> 
+                                <% if (isEndedGameValueSet) { %>
+                                    <span id="tab-<%= parray[i].name %>">
+                                        [ <%= parray[i].value.length < 2 ? '' : (parray[i].value[parray[i].value.length - 1].number < 10 ? '0' + parray[i].value[parray[i].value.length - 1].number : parray[i].value[parray[i].value.length - 1].number) %> ]
+                                    </span>
+                                <% } else { %>
+                                    <span id="tab-<%= parray[i].name %>">[ - ]</span>
+                                <% } %>
+                            <% } else { %>
+                                <span id="tab-<%= parray[i].name %>">
+                                    [ <%= parray[i].value.length < 2 ? '' : (parray[i].value[parray[i].value.length - 1].number < 10 ? '0' + parray[i].value[parray[i].value.length - 1].number : parray[i].value[parray[i].value.length - 1].number) %> ]
+                                </span>
+                            <% } %>
+                        <% } else { %>
+                            <span id="tab-<%= parray[i].name %>">[ ]</span>
+                        <% } %> 
+                            </div>
+                        </div>
+
+                <% } else { %>
+                   
+                    <div class="game1">
+                        <h2 style="color: #120CBC;margin-top: 3px;margin-bottom: -14px;"><%= parray[i].name %></h2>
+                        <% 
+                        // Get the time from the current game
+                        const timeParts = parray[i].gameEndTime.split(':');
+                        const hour = parseInt(timeParts[0]);
+                        const minute = parseInt(timeParts[1]);
+                        // Format the time to AM/PM
+                        const formattedTime = new Date(0, 0, 0, hour, minute).toLocaleTimeString('en-US', {hour: '2-digit', minute: '2-digit', hour12: true}).toUpperCase();
+                    %>
+                    <p style="color: red;margin-bottom: 2px;">(<%= formattedTime %>)</p>
+                    <div><span style="margin-right: 5px;">कल</span>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<span>आज</span> </div>
+                    <div><span style="margin-right: 5px;">{<%= parray[i].value.length < 2 ? (parray[i].value[0].number < 10 ? '0' + parray[i].value[0].number : parray[i].value[0].number) : parray[i].value[parray[i].value.length - 2].date === `${prevDate2}-${prevMonth}-${prevYear}` ? (parray[i].value[parray[i].value.length - 2].number < 10 ? '0' + parray[i].value[parray[i].value.length - 2].number : parray[i].value[parray[i].value.length - 2].number) : (parray[i].value[parray[i].value.length - 1].number < 10 ? '0' + parray[i].value[parray[i].value.length - 1].number : parray[i].value[parray[i].value.length - 1].number) %>}</span> 
+                        <img src="/img/arrow.gif" width="12" height="12" alt="satta king live result | fast live result | satta live result" title="satta live result | satta king live result | satta vip king">
+                        <% if (currHour > gameEndHour || (currHour === gameEndHour && currMinute >= gameEndMinute)) { %>
+                            <% if (i === gameIndex) { %> 
+                                <% if (isEndedGameValueSet) { %>
+                                    <span style="color: blue;" id="tab-<%= parray[i].name %>">
+                                        [ <%= parray[i].value.length < 2 ? '' : (parray[i].value[parray[i].value.length - 1].number < 10 ? '0' + parray[i].value[parray[i].value.length - 1].number : parray[i].value[parray[i].value.length - 1].number) %> ]
+                                    </span>
+                                <% } else { %>
+                                    <span style="color: blue;" id="tab-<%= parray[i].name %>">[ - ]</span>
+                                <% } %>
+                            <% } else { %>
+                                <span style="color: blue;" id="tab-<%= parray[i].name %>">
+                                    [ <%= parray[i].value.length < 2 ? '' : (parray[i].value[parray[i].value.length - 1].number < 10 ? '0' + parray[i].value[parray[i].value.length - 1].number : parray[i].value[parray[i].value.length - 1].number) %> ]
+                                </span>
+                            <% } %>
+                        <% } else { %>
+                            <span id="tab-<%= parray[i].name %>">[ ]</span>
+                        <% } %>
+                        
+                        </div>   
+                        </div>
+                <% } %>
+            <% }%>
+        </div>
+        <div class="year-select">
+            <h3>SELECT YEAR</h3>
+       
+            <select style="width: 200px;height: 40px;font-size: 25px;" onchange="onChangeYear(event)">
+                <%for(let year of yearsarr){ %>
+                    <option value="<%= year %>" <%= year == yeartoshow ? 'selected' : '' %> ><%= year %></option>
+                    <% }%>
+               
+            </select>
+        </div>
+        <div class="schedule">
+            <% for(let i=0;i<parray.length;i++){ %>
+
+                <p><%=parray[i].name %> ➡️ <%=parray[i].gameStartTime %> ⏱️</p>
+            <%} %>
+        </div>
+        <section class="bt">
+            
+            <div id="tp">SATTA RECORD CHART <%= currYear %></div>
+            <%for(let k=0;k<Math.ceil(parray2.length/5);k++ ) {%>
+                <%
+                  const start=k* 5;
+                  let end ;
+                  if(k===Math.ceil(parray2.length/5)-1){
+                    end=parray2.length
+                  } 
+                  else{
+                    end=start+5
+                  }
+                    
+                %>
+            <table>
+                <tr>
+                    <th>DATE</th>
+                    <% for(let i=start;i<end;i++) {%>
+                        <th><%= parray2[i].name %></th>
+
+
+                    <% } %>
+                </tr>
+                <tr>
+                    <th>TIME</th>
+                    <% for(let i=start;i<end;i++) {%>
+                        <td style="background-color: #FF033E;color: white;"><%= parray2[i].gameEndTime %></td>
+
+
+                    <% } %>
+                </tr>
+               
+                    <% for(let i=0;i<parray2[maxGameIndex].value.length;i++) {%>
+                        <tr>
+                            <% 
+                            // Get the time from the current game
+                            // const dateParts = parray[i].time.split('-');
+                            const dateParts = parray2[maxGameIndex].value[i].date.split('-');
+                            const date = parseInt(dateParts[0]);
+                            const month = parseInt(dateParts[1]);
+                            const year = parseInt(dateParts[2]);
+
+                            // Format the time to AM/PM
+                            const formattedDate = `${date}-${month}-${year}`;
+                        %>
+                        <td style="background-color: #CEC4EB;"><%= formattedDate %></td>
+                            <% for(let j=start;j<end;j++){ %>
+                                <%if( formattedDate===`${currDate2}-${currMonth}-${currYear}` ){ %>
+                                    <% 
+                                    let gameEnd= parray2[j].gameEndTime.split(":").map(Number)
+                                    let gameEndHour= gameEnd[0]
+                                    let gameEndMinute= gameEnd[1]
+                                    %>
+                                   <% console.log("currHour > gameEndHour || currHour === gameEndHour && currMinute >=  gameEndMinute",currHour > gameEndHour || (currHour === gameEndHour && currMinute >=  gameEndMinute)) %>
+                                    <% if( currHour > gameEndHour || (currHour === gameEndHour && currMinute >=  gameEndMinute)){ %>
+                                        <td id="<%= formattedDate %>-<%= parray2[j].name %>">
+                                            <%= parray2[j].value[i] ? (parray2[j].value[i].number < 10 ? '0' + parray2[j].value[i].number : parray2[j].value[i].number) : "-" %>
+                                        </td>
+                                        
+                                <% }else{ %>
+                                    <td id="<%= formattedDate %>-<%= parray2[j].name %>"></td>
+
+
+                              <% } %> 
+                            <% }  else {%>
+                                <td id="<%= formattedDate %>-<%= parray2[j].name %>">
+                                    <!-- <%= parray2[j].value[i] ? (parray2[j].value[i].number < 10 ? '0' + parray2[j].value[i].number : parray2[j].value[i].number) : "-" %> -->
+                                        <%= parray2[j].value[i] && parray2[j].value[i].number !== null ? (parray2[j].value[i].number < 10 ? '0' + parray2[j].value[i].number : parray2[j].value[i].number) : "-" %>
+                                    </td>
+                                    
+                                </td>
+                                
+                            <% }  %>
+                            <% } %>
+                        </tr>
+
+                    <% } %>
+            </table>
+            <% }%>
+
+        </section>
+
+    </section>
+   
+    <script>
+        function checkTime(serverTime, clientTime) {
+    const timeDifference = Math.abs(serverTime - clientTime);
+    const tolerance = 60 * 1000; // 1 minute in milliseconds
+    return timeDifference <= tolerance;
+}
+
+// Function to fetch server time
+function getServerTime() {
+    return fetch('/getServerTime')
+        .then(response => response.json())
+        .then(data => new Date(data.serverTime));
+}
+
+// Function to get client time
+function getClientTime() {
+    return new Date();
+}
+
+// Main function to check and render message
+async function checkAndRenderMessage() {
+    try {
+        const serverTime = await getServerTime();
+        const clientTime = getClientTime();
+
+        if (!checkTime(serverTime, clientTime)) {
+            // Render message if client's time is incorrect
+            document.body.innerText = 'Your time is incorrect.';
+        }
+    } catch (error) {
+        console.error('Error:', error);
+    }
+}
+
+// Call the main function when the page loads
+window.onload = checkAndRenderMessage;
+    </script>
+<script>
+    let container = document.querySelector(".wheel-container");
+    // console.log("container ",container)
+
+    let points = 100;
+    let rotateval = 360 / points;
+function createSpinItem(i) {
+
+  let spinItem = document.createElement("div");
+  spinItem.classList.add("number")
+  if(i>=0 && i<=9){
+    spinItem.textContent = `0${i}`;
+
+  }
+  else{
+    spinItem.textContent = i;
+
+  }
+  if (i === 1) {
+    // console.log("applied");
+    // spinItem.style.zIndex = "1";
+    spinItem.style.backgroundColor = "#ff9800";
+    return spinItem;
+  }
+  if (i % 5 === 0) {
+    spinItem.style.backgroundColor = "#3f51b5";
+  } else if (i % 5 === 1) {
+    spinItem.style.backgroundColor = "#ff9800";
+  } else if (i % 5 === 2) {
+    spinItem.style.backgroundColor = "#e91e63";
+  } else if (i % 5 === 3) {
+    spinItem.style.backgroundColor = "#4caf50";
+  } else {
+    spinItem.style.backgroundColor = "#009688";
+  }
+  spinItem.style.transform = `rotate(${rotateval * (i - 1)}deg)`;
+  return spinItem;
+}
+for (let i = 1; i <= points; i++) {
+  let spinItem = createSpinItem(i);
+  container.appendChild(spinItem);
+}
+let currentPointing = 1;
+let currGame=null
+let numberToPoint
+<% 
+let partialGameDataJson
+if(gameIndex==undefined){
+partialGameDataJson= '[]'
+}
+else{
+    const { name, gameStartTime, gameEndTime, year } = parray[gameIndex];
+const partialGameData = { name, gameStartTime, gameEndTime, year };
+partialGameDataJson= JSON.stringify(partialGameData);
+}
+
+
+%>
+ currGame = JSON.parse('<%- partialGameDataJson %>');
+//  console.log("currGame",currGame)
+ let allGames=JSON.parse('<%- JSON.stringify(allGames)  %>')
+
+ let currDate2 = <%= currDate2 %>;
+    let currMonth = <%= currMonth %>;
+    let currYear= <%= currYear %>;
+    <% if(typeof(gameIndex)==='undefined')
+    gameIndex=-1;
+    %>
+let gameIndex = <%= gameIndex %>;
+    let isGameEnded=<%= isGameEnded %>;
+    let isGameRunning=<%= isGameRunning %>;
+    let isEndedGameValueSet=<%= isEndedGameValueSet %>
+// console.log(allGames)
+// console.log("gameIndex from server",gameIndex)
+
+// console.log("currGame",currGame)
+
+let extraAngle = 720;
+
+let btn = document.getElementById("spin");
+function shipWheel(numberToPoint){
+    let rotateAngle;
+  if (numberToPoint <  currentPointing + 50 && numberToPoint > 1) {
+    rotateAngle = 360 - (numberToPoint - 1) * 3.6 + extraAngle;
+  } else {
+    rotateAngle = (100 - numberToPoint + 1) * 3.6 + extraAngle;
+  }
+
+    
+  container.style.transform = `rotate(${rotateAngle}deg)`;
+
+}
+// btn.onclick = function () {
+
+// };
+if(gameIndex !== -1)
+// console.log("enteredrtyyuui")
+fetch(`/gameResult?name=${currGame.name}`).then((response)=>{
+    return response.json()
+}).then((data)=>{
+    // console.log('data',data)
+//    setTimeout(()=>{spinInitiater(data.gameResult)},4000) 
+spinInitiater(data.gameResult)
+});
+
+function formatDate(date) {
+  const months = [
+    "January", "February", "March", "April", "May", "June", "July",
+    "August", "September", "October", "November", "December"
+  ];
+  
+  const hours = date.getHours();
+  const minutes = String(date.getMinutes()).padStart(2, '0');
+  const ampm = hours >= 12 ? 'PM' : 'AM';
+  const formattedHours = hours % 12 || 12; // Convert 0 to 12
+
+  const formattedDate = `${date.getDate()} ${months[date.getMonth()]} ${date.getFullYear()}`;
+  const formattedTime = `${formattedHours}:${minutes} ${ampm}`;
+
+  return `${formattedDate} ${formattedTime}`;
+}
+
+let livetime=document.getElementById("livetime")
+
+let currDate=new Date()
+let formattedDate=formatDate(currDate)
+livetime.textContent=formattedDate
+// console.log("currDate",currDate)
+let spinAnim=document.querySelector(".spin-anim")
+// console.log("spinAnim44444",spinAnim)
+let todayLastValue;
+let spinResult=document.getElementById("spinResult")
+function showResultAfterSpin(spinValue){
+    console.log("showResultAfterSpin called")
+    btn.style.fontSize="50px"
+                btn.textContent=`${spinValue}`
+                spinAnim.classList.remove("spin-none")
+                setTimeout(()=>{
+                    spinAnim.classList.add("spin-none")
+                    btn.style.fontSize="30px"
+                },2000)
+                
+                let now=new Date()
+                let nowDate=now.getDate()
+                let nowMonth=now.getMonth()+1;
+                let nowYear=now.getFullYear();
+                let nowHour=now.getHours();
+                let nowMinute=now.getMinutes();
+                // console.log("nowHour",nowHour)
+
+                // console.log("nowMinute",nowMinute)
+
+                // console.log("gameIndex789 ",gameIndex)
+
+                // console.log("gameIndex",(gameIndex-1)%allGames.length)
+                // console.log("jvnjnjnjnj2 ",gameIndex)
+
+                let temp=gameIndex-1
+                if(temp==-1)
+                temp=allGames.length-1;
+                let [gameEndHour, gameEndMinute] = allGames[temp].gameEndTime.split(":").map(Number);
+                // console.log("allGames[gameIndex].gameEndHour",gameEndHour)
+                // console.log("allGames[gameIndex].gameEndMinute",gameEndMinute)
+// console.log("jvnjnjnjnj ",temp)
+                if( nowHour > gameEndHour || (nowHour === gameEndHour && nowMinute >=  gameEndMinute)){
+                //    console.log("enteredqwerty")
+                    let fill=document.getElementById(`${nowDate}-${nowMonth}-${nowYear}-${allGames[temp].name}`)
+                    let cardFill=document.getElementById(`card${allGames[temp].name}`)
+                    let TabFill=document.getElementById(`tab-${allGames[temp].name}`)
+                
+
+console.log("fill",fill)
+                // if(fill!==null){
+                //         fill.textContent=spinValue
+                // }
+                // if(cardFill!==null){
+                //     cardFill.textContent=spinValue
+                // }
+                // if(TabFill!==null){
+                //     TabFill.textContent=`[ ${spinValue} ]`
+                // }
+                if (fill !== null) {
+                    fill.textContent = spinValue < 10 ? '0' + spinValue : spinValue;
+                }
+                if (cardFill !== null) {
+                    cardFill.textContent = spinValue < 10 ? '0' + spinValue : spinValue;
+                }
+                if (TabFill !== null) {
+                    TabFill.textContent = `[ ${spinValue < 10 ? '0' + spinValue : spinValue} ]`;
+                }
+                }
+
+
+}
+function spinInitiater(numberToPoint,showResult=true){
+
+    console.log("gameIndex123 ",gameIndex)
+
+    // console.log("numberToPoint",numberToPoint)
+    if ( isGameEnded) {
+        let DateNow=new Date()
+        let HoursNow=DateNow.getHours()
+        let MinutesNow=DateNow.getMinutes()
+        const [gameEndHour1, gameEndMinute1] = allGames[gameIndex].gameEndTime.split(":").map(Number);
+
+       if( isEndedGameValueSet && showResult  || ( (gameIndex == allGames.length-1 && !(HoursNow > gameEndHour1 || (HoursNow === gameEndHour1 && MinutesNow >=  gameEndMinute1)) ))){
+        console.log("entered inside")
+        if(!isEndedGameValueSet){
+            console.log("entered this")
+            fetch(`/yesterdayResult?name=${allGames[gameIndex].name}`).then((response)=>{
+                return response.json()
+            }).then((data)=>{
+                shipWheel(data.number);
+            setTimeout(()=>{showResultAfterSpin(data.number)},7100)
+            })
+           
+
+        }
+        else{
+            shipWheel(numberToPoint);
+            setTimeout(()=>{showResultAfterSpin(numberToPoint)},7100)
+
+        }
+       }
+        console.log("gameIndex456 ",gameIndex)
+
+  
+const reinstansiate=()=>{
+                isGameEnded=false;
+                isGameRunning=true;
+                  let ot= document.getElementById("ot")
+                  ot.textContent=allGames[gameIndex].name
+                // ot.innerHTML = '';
+                // let nowGame=allGames[gameIndex].name
+                // let gamesText="" 
+            //  for(let p=0;p<6;p++) {
+            //     gamesText+=`${nowGame}     `
+            //  } 
+            //  ot.innerText=gamesText
+                // Loop through each character of the game name
+                // for (let i = 0; i < nowGame.length; i++) {
+                //     // Create a new span element for each character
+                //     let span = document.createElement("span");
+                    
+                //     // Set the text content of the span to the current character
+                //     span.textContent = nowGame[i];
+                    
+                //     // Apply the text-shadow style to the span element
+
+                //     // Append the span to the container element
+                //     ot.appendChild(span);
+                // }
+                  resetSpinningWheel()
+                  spinInitiater(undefined) 
+                }
+                console.log("gameIndex before123",gameIndex)
+
+        let currentTime=new Date()
+        let targetTime=new Date();
+        let nowHour=currentTime.getHours();
+    let nowMinute=currentTime.getMinutes();
+    const [gameEndHour, gameEndMinute] = allGames[gameIndex].gameEndTime.split(":").map(Number);
+        if(isEndedGameValueSet || ( (gameIndex == allGames.length-1 && !(HoursNow > gameEndHour1 || (HoursNow === gameEndHour1 && MinutesNow >=  gameEndMinute1)) ))){
+            if(gameIndex===allGames.length-1 && (nowHour > gameEndHour || (nowHour === gameEndHour && nowMinute >=  gameEndMinute))){
+            targetTime.setDate(currentTime.getDate()+1)
+            // console.log('gameIndex inside',gameIndex)
+
+        }
+        console.log("gameIndex before",gameIndex)
+
+        gameIndex=(gameIndex+1)% allGames.length
+        console.log("gameIndex after",gameIndex)
+
+console.log("allGames[gameIndex].gameStartTime",allGames[gameIndex].gameStartTime)
+console.log("currentTime",currentTime)
+
+        const [targetHours, targetMinutes] = allGames[gameIndex].gameStartTime.split(":").map(Number);
+        targetTime.setHours(targetHours, targetMinutes, 0, 0);
+        const timeDifference = targetTime.getTime() - currentTime.getTime(); 
+        // console.log("currentTime ",currentTime)
+        // console.log("targetTime ",targetTime)
+ 
+        console.log("timeDifferencetimeDifference",timeDifference)
+        setTimeout(reinstansiate,timeDifference) 
+        isEndedGameValueSet=false;
+        }
+                 
+    }
+    else{
+                let currentTime=new Date()
+                let targetTime=new Date();
+                const [targetHours, targetMinutes] = allGames[gameIndex].gameEndTime.split(":").map(Number);
+                targetTime.setHours(targetHours, targetMinutes, 0, 0);
+                const timeDifference = targetTime.getTime() - currentTime.getTime();
+
+                // console.log("timeDifference",timeDifference)
+                setTimeout(()=>{
+                    fetch(`/gameResult?name=${allGames[gameIndex].name}`).then((response)=>{
+                        return response.json()
+                    }).then((data)=>{
+                        let {gameResult,isEndedGameValueSet}=data
+                        isGameEnded=true;
+                        isGameRunning=false;
+                        if(isEndedGameValueSet){
+                            spinInitiater(data.gameResult)
+                        }
+                       
+                    })
+                   
+                },timeDifference)
+    }
+}
+// setTimeout(() => {
+//    spinInitiater()
+// }, 100);
+
+
+// shipWheel()
+
+function resetSpinningWheel(){
+    // console.log("reset called")
+    container.style.transition = "transform 1s"; // Change transition speed to 1 second
+    container.style.transform = `rotate(0deg)`;
+    setTimeout(() => {
+        container.style.transition = "transform 7s"; // Change transition speed back to 5 seconds after reset
+    }, 1000); // Wait for 1 second before changing transition speed back
+    // btn.disabled = false;
+    // btn.style.cursor = "pointer";
+    btn.textContent="START"
+    btn.style.fontSize="18px"
+
+
+
+}
+function onChangeYear(e){
+    // console.log("calledonchange")
+window.location.href=`/?year=${e.target.value}`
+}
+
+
+
+</script>
+<script>
+    const socket = io();
+    console.log("socket",socket)
+        socket.on("value-updated",(data)=>{
+            console.log("socket hit")
+            shipWheel(data.value)
+            setTimeout(()=>{showResultAfterSpin(data.value)},7100)
+        
+            console.log("gameIndex is socket",gameIndex)
+            isEndedGameValueSet=true;
+            if(gameIndex===allGames.length-1){
+                todayLastValue=data.value;
+            }
+            spinInitiater(data.value,false)
+        })
+       
+    </script>
+</body>
+
+</html>
