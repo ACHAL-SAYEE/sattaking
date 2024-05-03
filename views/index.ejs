@@ -793,7 +793,8 @@ function spinInitiater(numberToPoint,showResult=true){
 
     // console.log("numberToPoint",numberToPoint)
     if ( isGameEnded) {
-        let DateNow=new Date()
+        console.log("entered is game ended")
+        let DateNow=new Date(new Date().toLocaleString("en-US", {timeZone: "Asia/Kolkata"}))
         let HoursNow=DateNow.getHours()
         let MinutesNow=DateNow.getMinutes()
         const [gameEndHour1, gameEndMinute1] = allGames[gameIndex].gameEndTime.split(":").map(Number);
@@ -850,8 +851,8 @@ const reinstansiate=()=>{
                 }
                 console.log("gameIndex before123",gameIndex)
 
-        let currentTime=new Date()
-        let targetTime=new Date();
+        let currentTime=new Date(new Date().toLocaleString("en-US", {timeZone: "Asia/Kolkata"}))
+        let targetTime=new Date(new Date().toLocaleString("en-US", {timeZone: "Asia/Kolkata"}));
         let nowHour=currentTime.getHours();
     let nowMinute=currentTime.getMinutes();
     const [gameEndHour, gameEndMinute] = allGames[gameIndex].gameEndTime.split(":").map(Number);
@@ -882,8 +883,8 @@ console.log("currentTime",currentTime)
                  
     }
     else{
-                let currentTime=new Date()
-                let targetTime=new Date();
+                let currentTime=new Date(new Date().toLocaleString("en-US", {timeZone: "Asia/Kolkata"}))
+                let targetTime=new Date(new Date().toLocaleString("en-US", {timeZone: "Asia/Kolkata"}));
                 const [targetHours, targetMinutes] = allGames[gameIndex].gameEndTime.split(":").map(Number);
                 targetTime.setHours(targetHours, targetMinutes, 0, 0);
                 const timeDifference = targetTime.getTime() - currentTime.getTime();

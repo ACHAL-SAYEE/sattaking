@@ -167,7 +167,7 @@ app.post("/login", async (req, res) => {
 
 app.post("/add", isLoggedIn, async (req, res) => {
   // console.log("jvjjvvkj",req.body)
-  let currDate = new Date();
+  let currDate = new Date(new Date().toLocaleString("en-US", {timeZone: "Asia/Kolkata"}));
   let currYear = currDate.getFullYear();
   const name = req.body.name;
   const gameEndTime = req.body.gameEndTime;
@@ -181,7 +181,7 @@ app.post("/add", isLoggedIn, async (req, res) => {
     game = 1;
     res.redirect("/admin");
   } else {
-    const date = new Date();
+    const date = new Date(new Date().toLocaleString("en-US", {timeZone: "Asia/Kolkata"}));
     date.setDate(currDate.getDate() - 1);
 
     let day = date.getDate();
@@ -258,7 +258,7 @@ app.post("/card", isLoggedIn, async (req, res) => {
 app.post("/add/value", isLoggedIn, async (req, res) => {
   const name = req.body.name;
   const value = req.body.value;
-  const date = new Date();
+  const date = new Date(new Date().toLocaleString("en-US", {timeZone: "Asia/Kolkata"}));
   let day = date.getDate();
   let month = date.getMonth() + 1;
   let year = date.getFullYear();
@@ -320,7 +320,7 @@ app.get("/card", isLoggedIn, (req, res) => {
 });
 
 app.get("/admin/editGame", isLoggedIn, async (req, res) => {
-  let currDate = new Date();
+  let currDate = new Date(new Date().toLocaleString("en-US", {timeZone: "Asia/Kolkata"}));
   let currYear = currDate.getFullYear();
   let existingGames = await Game.find({ year: `${currYear}` }, { value: 0 });
 
@@ -389,7 +389,7 @@ app.get("/", async (req, res) => {
     // .then(async (found) => {
     // console.log("parray", found);
     let prev = false;
-    const date = new Date();
+    const date = new Date(new Date().toLocaleString("en-US", {timeZone: "Asia/Kolkata"}));
     let day = date.getDate();
     let currentHour = date.getHours();
     let currentMinute = date.getMinutes();
@@ -551,7 +551,7 @@ app.get("/", async (req, res) => {
 
 app.get("/gameResult", async (req, res) => {
   const { name } = req.query;
-  let curr = new Date();
+  let curr = new Date(new Date().toLocaleString("en-US", {timeZone: "Asia/Kolkata"}));
   const currYear = curr.getFullYear().toString();
   let currMonth = curr.getMonth().toString() + 1;
   let currDate = curr.getDate();
@@ -598,8 +598,8 @@ app.get("/gameResult", async (req, res) => {
 });
 
 app.get("/yesterdayResult", async (req, res) => {
-  let currDate = new Date();
-  let prevDate = new Date();
+  let currDate = new Date(new Date().toLocaleString("en-US", {timeZone: "Asia/Kolkata"}));
+  let prevDate = new Date(new Date().toLocaleString("en-US", {timeZone: "Asia/Kolkata"}));
   prevDate.setDate(currDate.getDate() - 1);
   let currYear = currDate.getFullYear();
   let game = await Game.findOne({ name: req.query.name, year: `${currYear}` });
@@ -625,7 +625,7 @@ app.get("/yesterdayResult", async (req, res) => {
 //   res.redirect("/spinwheel");
 // });
 app.get("/getServerTime", (req, res) => {
-  const serverTime = new Date();
+  const serverTime = new Date(new Date().toLocaleString("en-US", {timeZone: "Asia/Kolkata"}));
   res.json({ serverTime });
 });
 
@@ -764,7 +764,7 @@ server.listen(process.env.PORT, () => {
 
 cron.schedule("0 0 1 1 *", async () => {
   try {
-    let currDate = new Date();
+    let currDate = new Date(new Date().toLocaleString("en-US", {timeZone: "Asia/Kolkata"}));
     let prevYear = currDate.getFullYear() - 1;
     let prevGames = await Game.find({ year: `${prevYear}` });
     for (let i = 0; i < prevGames.length; i++) {
