@@ -58,7 +58,9 @@ app.use((req, res, next) => {
 });
 
 app.use((req, res, next) => {
-  req.domain = req.protocol + "://" + req.get("host");
+  // req.domain = req.protocol + "://" + req.get("host");
+  req.domain = "https" + "://" + req.get("host");
+
   next();
 });
 
