@@ -286,7 +286,7 @@ height: 400px;
 <h4>SATTA KING | SATTA RESULT | SATTA RECORD</h4>
     </div>
     <% 
-    let currDate=new Date()
+    let currDate=new Date(new Date().toLocaleString("en-US", {timeZone: "Asia/Kolkata"}))
     console.log("currDate of server in ejs",currDate)
     let currYear=currDate.getFullYear()
     let currDate2=currDate.getDate()
