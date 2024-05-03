@@ -625,7 +625,7 @@ app.get("/yesterdayResult", async (req, res) => {
 //   res.redirect("/spinwheel");
 // });
 app.get("/getServerTime", (req, res) => {
-  const serverTime = new Date(new Date().toLocaleString("en-US", {timeZone: "Asia/Kolkata"}));
+  const serverTime = new Date();
   res.json({ serverTime });
 });
 
