@@ -136,6 +136,7 @@ const isLoggedIn = (req, res, next) => {
 const turr = new Date();
 const timeZoneOffset = turr.getTimezoneOffset(); // This will give you the time zone offset in minutes
 console.log('Time Zone Offset:', timeZoneOffset);
+console.log("turr hour",turr.getHours())
 
 app.get("/login", async (req, res) => {
   if (req.session.email) {
@@ -566,38 +567,44 @@ app.get("/gameResult", async (req, res) => {
   let gameResult;
   // console.log("gamy ", game);
   let isEndedGameValueSet = false;
-  if (TimeLiesAfter(game.gameEndTime, currentHour, currentMinute)) {
-    currDate = curr.getDate();
-    currMonth = curr.getMonth() + 1;
-    let dateString = `${currDate}-${currMonth}-${currYear}`;
-    if (game.value[game.value.length - 1].date === dateString) {
-      isEndedGameValueSet = true;
-      gameResult = game.value[game.value.length - 1].number;
+  if(game.gameEndTime===null){
+    gameResult = null;
+  }
+  else{
+    if (TimeLiesAfter(game.gameEndTime, currentHour, currentMinute)) {
+      currDate = curr.getDate();
+      currMonth = curr.getMonth() + 1;
+      let dateString = `${currDate}-${currMonth}-${currYear}`;
+      if (game.value[game.value.length - 1].date === dateString) {
+        isEndedGameValueSet = true;
+        gameResult = game.value[game.value.length - 1].number;
+      } else {
+        gameResult = null;
+      }
+      console.log("dateString456", dateString);
     } else {
       gameResult = null;
+      // console.log("curr before", curr);
+      // curr.setDate(currDate - 1);
+      // console.log("curr after", curr);
+  
+      // currDate = curr.getDate();
+      // currMonth = curr.getMonth() + 1;
+      // console.log("currDate", currDate);
+      // console.log("currMonth", currMonth);
+  
+      // let dateString = `${currDate}-${currMonth}-${currYear}`;
+      // if (game.value.length >= 2) {
+      //   console.log("dateString123", dateString);
+      //   if (game.value[game.value.length - 2].date === dateString)
+      //     gameResult = game.value[game.value.length - 2].number;
+      //   else gameResult = game.value[game.value.length - 1].number;
+      // } else {
+      //   gameResult = game.value[0].number;
+      // }
     }
-    console.log("dateString456", dateString);
-  } else {
-    gameResult = null;
-    // console.log("curr before", curr);
-    // curr.setDate(currDate - 1);
-    // console.log("curr after", curr);
-
-    // currDate = curr.getDate();
-    // currMonth = curr.getMonth() + 1;
-    // console.log("currDate", currDate);
-    // console.log("currMonth", currMonth);
-
-    // let dateString = `${currDate}-${currMonth}-${currYear}`;
-    // if (game.value.length >= 2) {
-    //   console.log("dateString123", dateString);
-    //   if (game.value[game.value.length - 2].date === dateString)
-    //     gameResult = game.value[game.value.length - 2].number;
-    //   else gameResult = game.value[game.value.length - 1].number;
-    // } else {
-    //   gameResult = game.value[0].number;
-    // }
   }
+  
   res.send({ gameResult, isEndedGameValueSet });
   console.log({ gameResult, isEndedGameValueSet });
 });
