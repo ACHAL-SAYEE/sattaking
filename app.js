@@ -133,6 +133,10 @@ const isLoggedIn = (req, res, next) => {
   }
 };
 
+const turr = new Date();
+const timeZoneOffset = turr.getTimezoneOffset(); // This will give you the time zone offset in minutes
+console.log('Time Zone Offset:', timeZoneOffset);
+
 app.get("/login", async (req, res) => {
   if (req.session.email) {
     res.redirect("/admin");
@@ -557,6 +561,7 @@ app.get("/gameResult", async (req, res) => {
   let currDate = curr.getDate();
   let currentHour = curr.getHours();
   let currentMinute = curr.getMinutes();
+  console.log("currentHour",currentHour)
   const game = await Game.findOne({ name, year: currYear });
   let gameResult;
   // console.log("gamy ", game);
