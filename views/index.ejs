@@ -690,6 +690,9 @@ function shipWheel(numberToPoint){
 // };
 if(gameIndex !== -1)
 // console.log("enteredrtyyuui")
+console.log("currGame123",currGame)
+console.log("currGame123",currGame.name)
+
 fetch(`/gameResult?name=${currGame.name}`).then((response)=>{
     return response.json()
 }).then((data)=>{

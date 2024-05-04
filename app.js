@@ -174,7 +174,7 @@ app.post("/add", isLoggedIn, async (req, res) => {
   // console.log("jvjjvvkj",req.body)
   let currDate = new Date(new Date().toLocaleString("en-US", {timeZone: "Asia/Kolkata"}));
   let currYear = currDate.getFullYear();
-  const name = req.body.name;
+  const name = req.body.name.trim();
   const gameEndTime = req.body.gameEndTime;
   const gameStartTime = req.body.gameStartTime;
   const spinNumber = req.body.spinNumber;
@@ -556,6 +556,8 @@ app.get("/", async (req, res) => {
 
 app.get("/gameResult", async (req, res) => {
   const { name } = req.query;
+  console.log("name",name)
+  console.log("req.query",req.query)
   let curr = new Date(new Date().toLocaleString("en-US", {timeZone: "Asia/Kolkata"}));
   const currYear = curr.getFullYear().toString();
   let currMonth = curr.getMonth().toString() + 1;
@@ -564,12 +566,13 @@ app.get("/gameResult", async (req, res) => {
   let currentMinute = curr.getMinutes();
   console.log("currentHour",currentHour)
   const game = await Game.findOne({ name, year: currYear });
-  let gameResult;
+  console.log("game123",name,currYear) 
+  let gameResult; 
   // console.log("gamy ", game);
   let isEndedGameValueSet = false;
   if(game.gameEndTime===null){
     gameResult = null;
-  }
+  } 
   else{
     if (TimeLiesAfter(game.gameEndTime, currentHour, currentMinute)) {
       currDate = curr.getDate();
