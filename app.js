@@ -570,10 +570,7 @@ app.get("/gameResult", async (req, res) => {
   let gameResult; 
   // console.log("gamy ", game);
   let isEndedGameValueSet = false;
-  if(game.gameEndTime===null){
-    gameResult = null;
-  } 
-  else{
+ 
     if (TimeLiesAfter(game.gameEndTime, currentHour, currentMinute)) {
       currDate = curr.getDate();
       currMonth = curr.getMonth() + 1;
@@ -606,7 +603,7 @@ app.get("/gameResult", async (req, res) => {
       //   gameResult = game.value[0].number;
       // }
     }
-  }
+  
   
   res.send({ gameResult, isEndedGameValueSet });
   console.log({ gameResult, isEndedGameValueSet });
