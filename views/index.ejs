@@ -539,7 +539,12 @@ height: 400px;
                             <% }  else {%>
                                 <td id="<%= formattedDate %>-<%= parray2[j].name %>">
                                     <!-- <%= parray2[j].value[i] ? (parray2[j].value[i].number < 10 ? '0' + parray2[j].value[i].number : parray2[j].value[i].number) : "-" %> -->
+                                    <% if(parray2[j].value[i] && parray2[maxGameIndex].value[i].date===parray2[j].value[i].date){%>
                                         <%= parray2[j].value[i] && parray2[j].value[i].number !== null ? (parray2[j].value[i].number < 10 ? '0' + parray2[j].value[i].number : parray2[j].value[i].number) : "-" %>
+                                    <%}else{ %>
+                                        <% parray2[j].value.splice(i-1,0,{date:formattedDate,value:""}) %>
+                                        -
+                                        <%} %>
                                     </td>
                                     
                                 </td>

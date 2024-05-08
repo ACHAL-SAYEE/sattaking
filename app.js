@@ -529,6 +529,7 @@ app.get("/", async (req, res) => {
       }
     }
     console.log("isEndedGameValueSet", isEndedGameValueSet);
+    console.log("maxGameIndex", maxGameIndex);
 
     res.render("index", {
       // nearestGame: nearestGame,
