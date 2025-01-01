@@ -430,6 +430,7 @@ height: 400px;
                     %>
                     <p style="color: red;margin-bottom: 2px;">(<%= formattedTime %>)</p>
                     <div><span style="margin-right: 5px;">कल</span>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<span>आज</span> </div>
+                    <% console.log("testing",parray[i])%>
                     <div><span style="margin-right: 5px;">{<%= parray[i].value.length < 2 ? (parray[i].value[0].number < 10 ? '0' + parray[i].value[0].number : parray[i].value[0].number) : parray[i].value[parray[i].value.length - 2].date === `${prevDate2}-${prevMonth}-${prevYear}` ? (parray[i].value[parray[i].value.length - 2].number < 10 ? '0' + parray[i].value[parray[i].value.length - 2].number : parray[i].value[parray[i].value.length - 2].number) : (parray[i].value[parray[i].value.length - 1].number < 10 ? '0' + parray[i].value[parray[i].value.length - 1].number : parray[i].value[parray[i].value.length - 1].number) %>}</span> 
                         <img src="/img/arrow.gif" width="12" height="12" alt="satta king live result | fast live result | satta live result" title="satta live result | satta king live result | satta vip king">
                         <% if (currHour > gameEndHour || (currHour === gameEndHour && currMinute >= gameEndMinute)) { %>
@@ -473,7 +474,7 @@ height: 400px;
         </div>
         <section class="bt">
             
-            <div id="tp">SATTA RECORD CHART <%= currYear %></div>
+            <div id="tp">SATTA RECORD CHART <%= yeartoshow %></div>
             <%for(let k=0;k<Math.ceil(parray2.length/5);k++ ) {%>
                 <%
                   const start=k* 5;
@@ -513,7 +514,7 @@ height: 400px;
                             const date = parseInt(dateParts[0]);
                             const month = parseInt(dateParts[1]);
                             const year = parseInt(dateParts[2]);
-
+                                // if(year!==currYear)continue;
                             // Format the time to AM/PM
                             const formattedDate = `${date}-${month}-${year}`;
                         %>

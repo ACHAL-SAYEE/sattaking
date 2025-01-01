@@ -135,8 +135,8 @@ const isLoggedIn = (req, res, next) => {
 
 const turr = new Date();
 const timeZoneOffset = turr.getTimezoneOffset(); // This will give you the time zone offset in minutes
-console.log('Time Zone Offset:', timeZoneOffset);
-console.log("turr hour",turr.getHours())
+console.log("Time Zone Offset:", timeZoneOffset);
+console.log("turr hour", turr.getHours());
 
 app.get("/login", async (req, res) => {
   if (req.session.email) {
@@ -172,7 +172,9 @@ app.post("/login", async (req, res) => {
 
 app.post("/add", isLoggedIn, async (req, res) => {
   // console.log("jvjjvvkj",req.body)
-  let currDate = new Date(new Date().toLocaleString("en-US", {timeZone: "Asia/Kolkata"}));
+  let currDate = new Date(
+    new Date().toLocaleString("en-US", { timeZone: "Asia/Kolkata" })
+  );
   let currYear = currDate.getFullYear();
   const name = req.body.name.trim();
   const gameEndTime = req.body.gameEndTime;
@@ -186,7 +188,9 @@ app.post("/add", isLoggedIn, async (req, res) => {
     game = 1;
     res.redirect("/admin");
   } else {
-    const date = new Date(new Date().toLocaleString("en-US", {timeZone: "Asia/Kolkata"}));
+    const date = new Date(
+      new Date().toLocaleString("en-US", { timeZone: "Asia/Kolkata" })
+    );
     date.setDate(currDate.getDate() - 1);
 
     let day = date.getDate();
@@ -263,7 +267,9 @@ app.post("/card", isLoggedIn, async (req, res) => {
 app.post("/add/value", isLoggedIn, async (req, res) => {
   const name = req.body.name;
   const value = req.body.value;
-  const date = new Date(new Date().toLocaleString("en-US", {timeZone: "Asia/Kolkata"}));
+  const date = new Date(
+    new Date().toLocaleString("en-US", { timeZone: "Asia/Kolkata" })
+  );
   let day = date.getDate();
   let month = date.getMonth() + 1;
   let year = date.getFullYear();
@@ -325,7 +331,9 @@ app.get("/card", isLoggedIn, (req, res) => {
 });
 
 app.get("/admin/editGame", isLoggedIn, async (req, res) => {
-  let currDate = new Date(new Date().toLocaleString("en-US", {timeZone: "Asia/Kolkata"}));
+  let currDate = new Date(
+    new Date().toLocaleString("en-US", { timeZone: "Asia/Kolkata" })
+  );
   let currYear = currDate.getFullYear();
   let existingGames = await Game.find({ year: `${currYear}` }, { value: 0 });
 
@@ -390,17 +398,22 @@ function TimeLiesAfter(gameEndTime, currentHour, currentMinute) {
 app.get("/", async (req, res) => {
   try {
     let yeartoshow = req.query.year;
-
+    let isFirstDayofYear = false;
     // .then(async (found) => {
     // console.log("parray", found);
     let prev = false;
-    const date = new Date(new Date().toLocaleString("en-US", {timeZone: "Asia/Kolkata"}));
+    const date = new Date(
+      new Date().toLocaleString("en-US", { timeZone: "Asia/Kolkata" })
+    );
     let day = date.getDate();
     let currentHour = date.getHours();
     let currentMinute = date.getMinutes();
     let month = date.getMonth() + 1;
     let year = date.getFullYear();
     let date1 = day + "-" + month + "-" + year;
+    if (day == 1 && month == 1) isFirstDayofYear = true;
+    let prevYearLastDayData = null;
+
     if (yeartoshow === undefined) {
       yeartoshow = year.toString();
     }
@@ -521,6 +534,7 @@ app.get("/", async (req, res) => {
     console.log("gameIndex ", gameIndex);
     console.log("isGameEnded", isGameEnded);
     let isEndedGameValueSet = false;
+    console.log(found[gameIndex]);
     if (isGameEnded) {
       if (
         found[gameIndex].value[found[gameIndex].value.length - 1].date === date1
@@ -530,9 +544,17 @@ app.get("/", async (req, res) => {
     }
     console.log("isEndedGameValueSet", isEndedGameValueSet);
     console.log("maxGameIndex", maxGameIndex);
-
+    if (isFirstDayofYear) {
+      let prevYearData = await Game.find({ year: `${year - 1}` });
+      for (let i = 0; i < found.length; i++) {
+        let tot = prevYearData[i].value.length;
+        found[i].value = [prevYearData[i].value[tot - 1], ...found[i].value];
+      }
+    }
     res.render("index", {
       // nearestGame: nearestGame,
+      isFirstDayofYear,
+      // prevYearLastDayData,
       isGameEnded,
       isGameRunning,
       gameIndex,
@@ -547,7 +569,7 @@ app.get("/", async (req, res) => {
       isEndedGameValueSet,
       // point: point.point,
       maxGameIndex,
-      domain:req.domain,
+      domain: req.domain,
     });
   } catch (e) {
     console.log(e);
@@ -557,75 +579,84 @@ app.get("/", async (req, res) => {
 
 app.get("/gameResult", async (req, res) => {
   const { name } = req.query;
-  console.log("name",name)
-  console.log("req.query",req.query)
-  let curr = new Date(new Date().toLocaleString("en-US", {timeZone: "Asia/Kolkata"}));
+  console.log("name", name);
+  console.log("req.query", req.query);
+  let curr = new Date(
+    new Date().toLocaleString("en-US", { timeZone: "Asia/Kolkata" })
+  );
   const currYear = curr.getFullYear().toString();
   let currMonth = curr.getMonth().toString() + 1;
   let currDate = curr.getDate();
   let currentHour = curr.getHours();
   let currentMinute = curr.getMinutes();
-  console.log("currentHour",currentHour)
+  console.log("currentHour", currentHour);
   const game = await Game.findOne({ name, year: currYear });
-  console.log("game123",name,currYear) 
-  let gameResult; 
+  console.log("game123", name, currYear);
+  let gameResult;
   // console.log("gamy ", game);
   let isEndedGameValueSet = false;
- 
-    if (TimeLiesAfter(game.gameEndTime, currentHour, currentMinute)) {
-      currDate = curr.getDate();
-      currMonth = curr.getMonth() + 1;
-      let dateString = `${currDate}-${currMonth}-${currYear}`;
-      if (game.value[game.value.length - 1].date === dateString) {
-        isEndedGameValueSet = true;
-        gameResult = game.value[game.value.length - 1].number;
-      } else {
-        gameResult = null;
-      }
-      console.log("dateString456", dateString);
+
+  if (TimeLiesAfter(game.gameEndTime, currentHour, currentMinute)) {
+    currDate = curr.getDate();
+    currMonth = curr.getMonth() + 1;
+    let dateString = `${currDate}-${currMonth}-${currYear}`;
+    if (game.value[game.value.length - 1].date === dateString) {
+      isEndedGameValueSet = true;
+      gameResult = game.value[game.value.length - 1].number;
     } else {
       gameResult = null;
-      // console.log("curr before", curr);
-      // curr.setDate(currDate - 1);
-      // console.log("curr after", curr);
-  
-      // currDate = curr.getDate();
-      // currMonth = curr.getMonth() + 1;
-      // console.log("currDate", currDate);
-      // console.log("currMonth", currMonth);
-  
-      // let dateString = `${currDate}-${currMonth}-${currYear}`;
-      // if (game.value.length >= 2) {
-      //   console.log("dateString123", dateString);
-      //   if (game.value[game.value.length - 2].date === dateString)
-      //     gameResult = game.value[game.value.length - 2].number;
-      //   else gameResult = game.value[game.value.length - 1].number;
-      // } else {
-      //   gameResult = game.value[0].number;
-      // }
     }
-  
-  
+    console.log("dateString456", dateString);
+  } else {
+    gameResult = null;
+    // console.log("curr before", curr);
+    // curr.setDate(currDate - 1);
+    // console.log("curr after", curr);
+
+    // currDate = curr.getDate();
+    // currMonth = curr.getMonth() + 1;
+    // console.log("currDate", currDate);
+    // console.log("currMonth", currMonth);
+
+    // let dateString = `${currDate}-${currMonth}-${currYear}`;
+    // if (game.value.length >= 2) {
+    //   console.log("dateString123", dateString);
+    //   if (game.value[game.value.length - 2].date === dateString)
+    //     gameResult = game.value[game.value.length - 2].number;
+    //   else gameResult = game.value[game.value.length - 1].number;
+    // } else {
+    //   gameResult = game.value[0].number;
+    // }
+  }
+
   res.send({ gameResult, isEndedGameValueSet });
   console.log({ gameResult, isEndedGameValueSet });
 });
 
 app.get("/yesterdayResult", async (req, res) => {
-  let currDate = new Date(new Date().toLocaleString("en-US", {timeZone: "Asia/Kolkata"}));
-  let prevDate = new Date(new Date().toLocaleString("en-US", {timeZone: "Asia/Kolkata"}));
+  let currDate = new Date(
+    new Date().toLocaleString("en-US", { timeZone: "Asia/Kolkata" })
+  );
+  let prevDate = new Date(
+    new Date().toLocaleString("en-US", { timeZone: "Asia/Kolkata" })
+  );
   prevDate.setDate(currDate.getDate() - 1);
   let currYear = currDate.getFullYear();
   let game = await Game.findOne({ name: req.query.name, year: `${currYear}` });
-  let prevDateString = `${prevDate.getDate()}-${prevDate.getMonth()+1}-${prevDate.getFullYear()}`;
+  let prevDateString = `${prevDate.getDate()}-${
+    prevDate.getMonth() + 1
+  }-${prevDate.getFullYear()}`;
   let endval = game.value.length - 1;
-  console.log("prevDateString",prevDateString," game.value[endval].date ",game.value[endval].date )
+  console.log(
+    "prevDateString",
+    prevDateString,
+    " game.value[endval].date ",
+    game.value[endval].date
+  );
   if (game.value[endval].date === prevDateString) {
-    res.send({number:game.value[endval].number});
-    
-  }
-  else{
-    res.send({number:game.value[endval-1].number});
-
+    res.send({ number: game.value[endval].number });
+  } else {
+    res.send({ number: game.value[endval - 1].number });
   }
 });
 // app.get("/spinwheel", async (req, res) => {
@@ -777,32 +808,10 @@ server.listen(process.env.PORT, () => {
 
 cron.schedule("0 0 1 1 *", async () => {
   try {
-    let currDate = new Date(new Date().toLocaleString("en-US", {timeZone: "Asia/Kolkata"}));
-    let prevYear = currDate.getFullYear() - 1;
-    let prevGames = await Game.find({ year: `${prevYear}` });
-    for (let i = 0; i < prevGames.length; i++) {
-      await Game.create({
-        name: prevGames[i].name,
-        time: prevGames[i].time,
-        year: prevYear + 1,
-        value: [
-          {
-            date: prevGames[i].value[prevGames[i].value.length - 1].date,
-            number: prevGames[i].value[prevGames[i].value.length - 1].number,
-          },
-        ],
-      });
-    }
-  } catch (e) {
-    console.log(e);
-  }
-});
-
-io.on("connection", (socket) => {
-  console.log(`someone with ${socket.id} connected`);
-  socket.on("admin-updated-value", (data) => {
-    console.log("data", data);
-    let { _csrf, ...rest } = data;
-    io.emit("value-updated", rest);
-  });
-});
+    let currDate = new Date(
+      new Date().toLocaleString("en-US", { timeZone: "Asia/Kolkata" })
+    );
+ let currDate = new Date(
+      new Date().toLocaleString("en-US", { timeZone: "Asia/Kolkata" })
+    );
+>>>>>>> 068b279 (Initial commit)
