@@ -421,7 +421,17 @@ app.get("/", async (req, res) => {
 
     // console.log("date1", date1,hour);
 
-    found.sort(function (a, b) {
+   
+    
+    let found2;
+    console.log("yeartoshow ", yeartoshow, "year ", year);
+    if (yeartoshow == year) {
+      // console.log("chosen");
+      found2 = found;
+    } else {
+      found2 = await Game.find({ year: yeartoshow });
+    }
+    found2.sort(function (a, b) {
       // Extract the time strings from objects 'a' and 'b'
       // console.log("aaa ", a.gameStartTime);
       // console.log("bbb ", b.gameStartTime);
@@ -437,14 +447,6 @@ app.get("/", async (req, res) => {
       // If hours are equal, compare the minutes
       return timeA[1] - timeB[1];
     });
-    let found2;
-    console.log("yeartoshow ", yeartoshow, "year ", year);
-    if (yeartoshow == year) {
-      // console.log("chosen");
-      found2 = found;
-    } else {
-      found2 = await Game.find({ year: yeartoshow });
-    }
     // console.log("found", found);
     // console.log("found2", found2);
 
@@ -551,6 +553,22 @@ app.get("/", async (req, res) => {
         found[i].value = [prevYearData[i].value[tot - 1], ...found[i].value];
       }
     }
+    found.sort(function (a, b) {
+      // Extract the time strings from objects 'a' and 'b'
+      // console.log("aaa ", a.gameStartTime);
+      // console.log("bbb ", b.gameStartTime);
+
+      var timeA = a.gameStartTime.split(":").map(Number);
+      var timeB = b.gameStartTime.split(":").map(Number);
+
+      // Compare the hours
+      if (timeA[0] !== timeB[0]) {
+        return timeA[0] - timeB[0];
+      }
+
+      // If hours are equal, compare the minutes
+      return timeA[1] - timeB[1];
+    });
     res.render("index", {
       // nearestGame: nearestGame,
       isFirstDayofYear,
