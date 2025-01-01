@@ -811,7 +811,31 @@ cron.schedule("0 0 1 1 *", async () => {
     let currDate = new Date(
       new Date().toLocaleString("en-US", { timeZone: "Asia/Kolkata" })
     );
- let currDate = new Date(
-      new Date().toLocaleString("en-US", { timeZone: "Asia/Kolkata" })
-    );
->>>>>>> 068b279 (Initial commit)
+    let prevYear = currDate.getFullYear() - 1;
+    let prevGames = await Game.find({ year: `${prevYear}` });
+    for (let i = 0; i < prevGames.length; i++) {
+      await Game.create({
+        name: prevGames[i].name,
+        time: prevGames[i].time,
+        year: prevYear + 1,
+        value: [
+          {
+            date: prevGames[i].value[prevGames[i].value.length - 1].date,
+            number: prevGames[i].value[prevGames[i].value.length - 1].number,
+          },
+        ],
+      });
+    }
+  } catch (e) {
+    console.log(e);
+  }
+});
+
+io.on("connection", (socket) => {
+  console.log(`someone with ${socket.id} connected`);
+  socket.on("admin-updated-value", (data) => {
+    console.log("data", data);
+    let { _csrf, ...rest } = data;
+    io.emit("value-updated", rest);
+  });
+});
