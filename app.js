@@ -231,6 +231,7 @@ app.post("/add", isLoggedIn, async (req, res) => {
     });
   }
 });
+
 app.post("/delete", isLoggedIn, async (req, res) => {
   const name = req.body.name;
   await Game.deleteOne({ name: name })
@@ -326,6 +327,7 @@ app.get("/admin", isLoggedIn, (req, res) => {
   res.render("add", { game: game });
   game = 0;
 });
+
 app.get("/card", isLoggedIn, (req, res) => {
   res.render("card");
 });
@@ -421,8 +423,6 @@ app.get("/", async (req, res) => {
 
     // console.log("date1", date1,hour);
 
-   
-    
     let found2;
     console.log("yeartoshow ", yeartoshow, "year ", year);
     if (yeartoshow == year) {
@@ -546,6 +546,7 @@ app.get("/", async (req, res) => {
     }
     console.log("isEndedGameValueSet", isEndedGameValueSet);
     console.log("maxGameIndex", maxGameIndex);
+    console.log("found1 (stringified)", JSON.stringify(found));
     if (isFirstDayofYear) {
       let prevYearData = await Game.find({ year: `${year - 1}` });
       for (let i = 0; i < found.length; i++) {
@@ -553,6 +554,7 @@ app.get("/", async (req, res) => {
         found[i].value = [prevYearData[i].value[tot - 1], ...found[i].value];
       }
     }
+    console.log("found2 (stringified)", JSON.stringify(found));
     found.sort(function (a, b) {
       // Extract the time strings from objects 'a' and 'b'
       // console.log("aaa ", a.gameStartTime);
@@ -569,6 +571,8 @@ app.get("/", async (req, res) => {
       // If hours are equal, compare the minutes
       return timeA[1] - timeB[1];
     });
+    console.log("found3 (stringified)", JSON.stringify(found));
+
     res.render("index", {
       // nearestGame: nearestGame,
       isFirstDayofYear,
@@ -842,6 +846,8 @@ cron.schedule("0 0 1 1 *", async () => {
             number: prevGames[i].value[prevGames[i].value.length - 1].number,
           },
         ],
+        gameStartTime: prevGames[i].gameStartTime,
+        gameEndTime: prevGames[i].gameEndTime,
       });
     }
   } catch (e) {
